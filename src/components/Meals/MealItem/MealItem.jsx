@@ -1,5 +1,8 @@
 import React from "react";
 
+// Importing other custom components
+import MealItemForm from "./MealItemForm";
+
 // Importing css and assets
 import classes from "./MealItem.module.css";
 
@@ -12,7 +15,9 @@ const MealItem = (props) => {
         <p className={classes.desc}>{props.desc}</p>
         <p className={classes.price}>{price}</p>
       </article>
-      <article></article>
+      <article>
+        <MealItemForm id={props.id} />
+      </article>
     </li>
   );
 };
