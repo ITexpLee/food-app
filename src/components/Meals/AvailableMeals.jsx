@@ -1,5 +1,9 @@
 import React from "react";
 
+// Importing other components
+import Card from "../UI/Card";
+import MealItem from "./MealItem/MealItem.jsx";
+
 // Importing Css file and Assets
 import classes from "./AvailableMeals.module.css";
 
@@ -36,12 +40,21 @@ const DUMMY_MEALS = [
 const AvailableMeals = () => {
   // We always want to return a lean JSX code thus the logic is kept outside
   // We want a small jsx component for every meal which we will do by mapping
-  let mealsList = DUMMY_MEALS.map((meal) => <li>{meal.name}</li>);
-  console.log(mealsList);
+  let mealsList = DUMMY_MEALS.map((meal) => (
+    <MealItem
+      id={meal.id}
+      key={meal.id}
+      name={meal.name}
+      desc={meal.description}
+      price={meal.price}
+    />
+  ));
 
   return (
     <section className={classes.meals}>
-      <ul>{mealsList}</ul>
+      <Card>
+        <ul>{mealsList}</ul>
+      </Card>
     </section>
   );
 };

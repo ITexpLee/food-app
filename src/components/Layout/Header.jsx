@@ -14,7 +14,7 @@ const Header = (props) => {
       {/* For the top/header part we use header tag. Div/article(symantic reasons) is for the image */}
       <header className={classes.header}>
         <h1>ReactMeals</h1>
-        <HeaderCartButton />
+        <HeaderCartButton onClick={props.onShowCart} />
       </header>
       {/* If our styles has a dash we need to add it this way */}
       <article className={classes["main-image"]}>
