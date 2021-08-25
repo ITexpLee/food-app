@@ -19,9 +19,14 @@ const Cart = (props) => {
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
   // Cart Item Removing and Adding handler
-  const cartItemRemoveHandler = (id) => {};
+  const cartItemRemoveHandler = (id) => {
+    cartCtx.removeItem(id);
+  };
 
-  const cartItemAddHandler = (item) => {};
+  const cartItemAddHandler = (item) => {
+    // We need to send item as a object + amount. This is why we break it down
+    cartCtx.addItem({ ...item, amount: 1 });
+  };
 
   // We have created CartItems outside of the return because we want the logic to be outside
   // All this code will be broken into component iteself.
