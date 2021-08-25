@@ -13,11 +13,32 @@ const defaultCartState = {
 const cartReducer = (state, action) => {
   //   Check if the action type is ADDITEM
   if (action.type === "ADDITEM") {
-    const updatedItem = state.items.concat(action.item);
+    // Check if the item already exits in the Cart
+    // if any stored has the same id then it exists
+    const existingCartIndex = state.items.findIndex(
+      (item) => item.id === action.item.id
+    );
+
+    // if it exists update the amount
+    const exisitngCartItem = state.items[existingCartIndex];
+    let updatedItems;
+
+    // If it exists update the state immutably simply copy it and use
+    if (exisitngCartItem) {
+      const updatedItem = {
+        ...exisitngCartItem,
+        amount: exisitngCartItem.amount + action.item.amount,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartIndex] = updatedItem;
+    } else {
+      updatedItems = state.items.concat(action.item);
+    }
+
     const newTotalAmount =
       state.totalAmount + action.item.price * action.item.amount;
     return {
-      items: updatedItem,
+      items: updatedItems,
       totalAmount: newTotalAmount,
     };
   }
