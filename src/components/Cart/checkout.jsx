@@ -5,7 +5,7 @@ import classes from "./checkout.module.css";
 
 // Creating helper functions to optimize code and for authentication
 const isEmpty = (value) => value.trim() === "";
-const isNotFiveCharLong = (value) => value.trim().length !== 5;
+const isFiveCharLong = (value) => value.trim().length === 5;
 
 const Checkout = (props) => {
   // Using useRef to get all data and validate on submission
@@ -28,14 +28,14 @@ const Checkout = (props) => {
 
     // All input values
     const enteredName = nameInputRef.current.value;
-    const enteredAddress = nameInputRef.current.value;
-    const enteredPincode = nameInputRef.current.value;
-    const enteredCity = nameInputRef.current.value;
+    const enteredAddress = addressInputRef.current.value;
+    const enteredPincode = pincodeInputRef.current.value;
+    const enteredCity = cityInputRef.current.value;
 
     // Authenticate each one by one
     const enteredNameIsValid = !isEmpty(enteredName);
     const enteredAddressIsValid = !isEmpty(enteredAddress);
-    const enteredPincodeIsValid = !isNotFiveCharLong(enteredPincode);
+    const enteredPincodeIsValid = isFiveCharLong(enteredPincode);
     const enteredCityIsValid = !isEmpty(enteredCity);
 
     // We will check if all fields are valid and store it in state
@@ -54,9 +54,18 @@ const Checkout = (props) => {
       enteredCityIsValid &&
       enteredPincodeIsValid;
 
+    // Return and stop submission if data is inValid
     if (!isFormValid) {
       return;
     }
+
+    // Submit the data and send value to parent
+    props.onConfirm({
+      name: enteredName,
+      address: enteredAddress,
+      pincode: enteredPincode,
+      city: enteredCity,
+    });
   };
 
   return (

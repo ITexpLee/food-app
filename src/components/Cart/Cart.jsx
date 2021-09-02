@@ -8,10 +8,15 @@ import Checkout from "./checkout";
 
 // Importing css and assets
 import classes from "./Cart.module.css";
+import axios from "axios";
 
 const Cart = (props) => {
   // User Checkout State
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  // User order data submission State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Submit succesffuly or not
+  const [didSubmit, setDidSubmit] = useState(false);
 
   // Using Context to render the cart
   const cartCtx = useContext(CartContext);
@@ -37,8 +42,26 @@ const Cart = (props) => {
     setIsCheckingOut(true);
   };
 
-  // Submit handling function
-  const submitOrderHandler = (orderData) => {};
+  // Submit handling function (sending user Data to server)
+  const submitOrderHandler = async (userData) => {
+    // Set it to true when it's loading
+    setIsSubmitting(true);
+    // config object
+    const config = JSON.stringify({
+      user: userData,
+      orderedItems: cartCtx.items,
+    });
+    // Using axios to post
+    await axios.post(
+      "https://react-http-63562-default-rtdb.firebaseio.com/orders.json",
+      config
+    );
+    // completed submitting (loading complete)
+    setIsSubmitting(false);
+    setDidSubmit(true);
+    // Clearing cart using context
+    cartCtx.removeAllItem();
+  };
 
   // We have created CartItems outside of the return because we want the logic to be outside
   // All this code will be broken into component iteself.
@@ -72,8 +95,9 @@ const Cart = (props) => {
     </article>
   );
 
-  return (
-    <Modal onClose={props.onHideCart}>
+  // We will store the entire Modal in the constant and remove it once done
+  const cartModalContent = (
+    <React.Fragment>
       {cartItems}
       <p className={classes.total}>
         <span>Total Amount</span>
@@ -84,6 +108,33 @@ const Cart = (props) => {
         <Checkout onClose={props.onHideCart} onConfirm={submitOrderHandler} />
       )}
       {!isCheckingOut && modalActions}
+    </React.Fragment>
+  );
+
+  // Loading Modal Content
+  const isSubmittingModalContent = <p>Sending order data...</p>;
+
+  // When submissing is complete
+  const didSubmitModalContent = (
+    <React.Fragment>
+      <p>Successfully sent the order!</p>
+      <article className={classes.actions}>
+        <button
+          type="button"
+          className={classes["button--alt"]}
+          onClick={props.onHideCart}
+        >
+          Close
+        </button>
+      </article>
+    </React.Fragment>
+  );
+
+  return (
+    <Modal onClose={props.onHideCart}>
+      {!isSubmitting && !didSubmit && cartModalContent}
+      {isSubmitting && isSubmittingModalContent}
+      {!isSubmitting && didSubmit && didSubmitModalContent}
     </Modal>
   );
 };
