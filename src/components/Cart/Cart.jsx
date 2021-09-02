@@ -37,6 +37,9 @@ const Cart = (props) => {
     setIsCheckingOut(true);
   };
 
+  // Submit handling function
+  const submitOrderHandler = (orderData) => {};
+
   // We have created CartItems outside of the return because we want the logic to be outside
   // All this code will be broken into component iteself.
   const cartItems = (
@@ -77,7 +80,9 @@ const Cart = (props) => {
         <span>{totalAmount}</span>
       </p>
       {/* Render the checkout form when click on order btn */}
-      {isCheckingOut && <Checkout />}
+      {isCheckingOut && (
+        <Checkout onClose={props.onHideCart} onConfirm={submitOrderHandler} />
+      )}
       {!isCheckingOut && modalActions}
     </Modal>
   );
