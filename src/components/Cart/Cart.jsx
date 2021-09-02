@@ -1,14 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 // Importing Custom components
 import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
-import CartContext from "../../store/CartContext.jsx";
+import CartContext from "../../store/CartContext";
+import Checkout from "./checkout";
 
 // Importing css and assets
 import classes from "./Cart.module.css";
 
 const Cart = (props) => {
+  // User Checkout State
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
   // Using Context to render the cart
   const cartCtx = useContext(CartContext);
 
@@ -28,6 +32,11 @@ const Cart = (props) => {
     cartCtx.addItem({ ...item, amount: 1 });
   };
 
+  // Order form Handler
+  const orderHandler = () => {
+    setIsCheckingOut(true);
+  };
+
   // We have created CartItems outside of the return because we want the logic to be outside
   // All this code will be broken into component iteself.
   const cartItems = (
@@ -45,6 +54,21 @@ const Cart = (props) => {
     </ul>
   );
 
+  // Modal action button (These are rendered conditionally)
+  const modalActions = (
+    <article className={classes.actions}>
+      <button className={classes["button--alt"]} onClick={props.onHideCart}>
+        Close
+      </button>
+      {/* Dynamically checking if the cart has items */}
+      {hasItems && (
+        <button className={classes.button} onClick={orderHandler}>
+          Order
+        </button>
+      )}
+    </article>
+  );
+
   return (
     <Modal onClose={props.onHideCart}>
       {cartItems}
@@ -52,13 +76,9 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </p>
-      <article className={classes.actions}>
-        <button className={classes["button--alt"]} onClick={props.onHideCart}>
-          Close
-        </button>
-        {/* Dynamically checking if the cart has items */}
-        {hasItems && <button className={classes.button}>Order</button>}
-      </article>
+      {/* Render the checkout form when click on order btn */}
+      {isCheckingOut && <Checkout />}
+      {!isCheckingOut && modalActions}
     </Modal>
   );
 };
